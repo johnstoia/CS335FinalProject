@@ -4,17 +4,27 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.TreeSet;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import model.PokeBattle;
 import model.Pokemon;
 import objects.*;
 import view.ItemView;
+import view.PokeBattleView;
+import view.PokeText;
 import view.PokemonCaptureView;
 
 
@@ -68,54 +78,90 @@ public class PokeWorld{
 		gameFrame.setSize(998,689);
 		gameFrame.setLayout(new GridLayout(2,3));
 		World myWorld = new World(trainerName,mapChoice);
-		ItemView itemView = new ItemView(myWorld.getTrainer()); // list of items by making new ItemView
+		ItemView itemView = new ItemView(myWorld.getTrainer(), myWorld.getMapView(), myWorld.getKeySet()); // list of items by making new ItemView
 		JList itemList = new JList(myWorld.getTrainer().getItemList()); // hardcoding list of items
-		myWorld.getTrainer().caughtPokemon(new Pokemon("Gregachu",9));
 		PokemonCaptureView capturedList = new PokemonCaptureView(myWorld.getTrainer());
-		
-		JLabel l = new JLabel("BLah");
-		
-		JPanel p = new JPanel();
-		p.add(l);
-		JPanel a = new JPanel();
-		JPanel b = new JPanel();
-		JPanel c = new JPanel();
-		JPanel d = new JPanel();
-		a.setPreferredSize(new Dimension(336,349));
-		b.setPreferredSize(new Dimension(336,349));
-		p.setPreferredSize(new Dimension(336,349));
-		c.setPreferredSize(new Dimension(336,349));
-		p.setBackground(Color.CYAN);
-		a.setBackground(Color.RED);
-		b.setBackground(Color.GREEN);
-		c.setBackground(Color.BLACK);
-		d.setBackground(Color.MAGENTA);
-		
-		gameFrame.add(c);
-		gameFrame.add(myWorld); // add map to frame
+		PokeBattle battle = new PokeBattle(myWorld.getTrainer(),myWorld.getMapView().getPokemon());
+		PokeText pokeText = new PokeText(battle);
+		PokeBattleView battleScene = new PokeBattleView(battle,myWorld.getMapView(),pokeText,capturedList,itemView);
 
-//		gameFrame.add(capturedList);
-//		itemList.removeKeyListener(itemList.getKeyListeners());
-//		gameFrame.add(a);
-//		gameFrame.add(itemView); // add item list to frame
-//		b.add(itemList);
-//		gameFrame.add(itemList); // add hardcode item list to frame
-		gameFrame.add(b);
-		gameFrame.add(d);
-		gameFrame.add(p);
-		
-//		itemList.setEnabled(false);
+	
+		gameFrame.add(battleScene);
+		gameFrame.add(myWorld); // add map to frame
+		gameFrame.add(capturedList);
+		gameFrame.add(new JPanel(){
+			public void paintComponent(Graphics g){
+				super.paintComponent(g);
+				try {
+					g.drawImage(ImageIO.read(new File("images/SafariZoneSimulator.png")), 0, 0, 336,349,null );
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		gameFrame.add(pokeText);
+		gameFrame.add(itemView);
+
 		gameFrame.addKeyListener(new KeyAdapter(){
+			@Override
 			public void keyPressed(KeyEvent e) {
-//				if(myWorld.getMapView().getEncounter() == false)
+				
+				if(myWorld.getMapView().getEncounter() == true){
+					battleScene.setVisibility(true);
+					battleScene.setVisible(true);
+					myWorld.getMapView().setState(false);
+					pokeText.updateText(battleScene.getMap().getPokemon().getName() + " has appeared!");
+					battleScene.setImage(myWorld.getMapView().getPokemon());
+					battleScene.setPokemonName(battleScene.getMap().getPokemon().getName());
+					battleScene.setPokemonRarity(battleScene.getMap().getPokemon().getRarity());
+					battleScene.getLabelName().setText(battleScene.getMap().getPokemon().getName());
+					battleScene.getLabelRarity().setText(""+battleScene.getMap().getPokemon().getRarity());
+					battle.setPokemon(battleScene.getMap().getPokemon());
+					itemView.setItemList(myWorld.getTrainer());
+//					System.out.println(myWorld.getMapView().getTrainer().getCaughtList().toString());
+					capturedList.setPokemonList(myWorld.getMapView().getTrainer().getCaughtList());
+//					capturedList.repaint();
+					System.out.println(capturedList.toStrings());
+//					battle = new PokeBattle(myWorld.getTrainer(),battleScene.getMap().getPokemon());
+//					myWorld.setEnabled(false);
+//					System.out.println(myWorld.getMapView().getState());
+//					System.out.println(battleScene.getVisibility());
+//					battleScene.setVisibility(true);
+//					battleScene.repaint();
+//					pokeText.updateText(battleScene.getPokeBattle().getPokemon().getName());
+//					pokeText.repaint();
+//					System.out.println(battleScene.getVisibility());
+				}
+				
+					
+				else{
+					
+					battleScene.setVisibility(false);
+					battleScene.setVisible(false);
+					myWorld.getMapView().setState(true);
+//				if(myWorld.getMapView().getEncounter() == false){
 					myWorld.getKeySet().add(e.getKeyChar());
 //					myWorld.getItemList().setVisible(true);
+					myWorld.getMapView().setState(true);
+					itemView.setItemList(myWorld.getTrainer());
+//					itemView.repaint();
+					capturedList.setPokemonList(myWorld.getMapView().getTrainer().getCaughtList());
+//				}
+					
+				}
+//					myWorld.getMapView().setState(true);
+//					myWorld.setEnabled(myWorld.getMapView().getState());
 			}
+			@Override
 			public void keyReleased(KeyEvent e) {
 				myWorld.getKeySet().remove(e.getKeyChar());
 //				myWorld.getItemList().setVisible(false);
+				itemView.setItemList(myWorld.getTrainer());
+				itemView.repaint();
 			}
 		});
+		gameFrame.setFocusable(true);
+		
 		
 		
 		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

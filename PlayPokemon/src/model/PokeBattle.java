@@ -5,7 +5,8 @@ import objects.*;
 public class PokeBattle {
 	private Trainer trainer;
 	private Pokemon pokemon;
-	private String textString;
+	private String textString = "Welcome to Pokemon";
+	private boolean caught = false;
 	private boolean endBattle = false;
 	private boolean isAsleep = false;
 	private int sleepTurns;
@@ -120,6 +121,7 @@ public class PokeBattle {
 		if(pokemon.catches() == true){
 			textString = pokemon.getName()+" was caught!";
 			trainer.caughtPokemon(pokemon);
+			caught = true;
 			endBattle = true;
 		}else{
 			textString = pokemon.getName()+" broke free!";
@@ -167,6 +169,7 @@ public class PokeBattle {
 		
 		if(pokemon.catches() == true){
 			trainer.caughtPokemon(pokemon);
+			caught = true;
 			endBattle = true;
 		}
 	}
@@ -179,5 +182,39 @@ public class PokeBattle {
 	public boolean getEndBattle(){
 		return endBattle;
 		
+	}
+	
+	public String getTextString(){
+		return textString;
+	}
+	
+	public Trainer getTrainer(){
+		return trainer;
+	}
+	
+	public Pokemon getPokemon(){
+		return pokemon;
+	}
+	
+	public void setPokemon(Pokemon pokemon){
+		this.pokemon = pokemon;
+	}
+	
+	public void reset(){
+		this.endBattle = false;
+		this.isAsleep = false;
+		Random r = new Random();
+		int high = 4;
+		int low = 1;
+		int randomNumber = r.nextInt(high-low) + low;
+		this.sleepTurns = randomNumber;
+		this.sleepTurnCounter = 0;
+		this.getPokemon().setLikelyToCatch();
+		this.getPokemon().setLikelyToRun();
+		this.caught = false;
+	}
+
+	public boolean isCaught() {
+		return caught;
 	}
 }

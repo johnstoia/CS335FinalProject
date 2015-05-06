@@ -42,10 +42,7 @@ public class Pokemon {
 			};
 		
 		this.likelyToRun = 30;
-		
-		if(rarity >= 1 && rarity <= 6) this.likelyToCatch = 30;
-		if(rarity > 6 && rarity <= 9) this.likelyToCatch = 20;
-		if(rarity == 10) this.likelyToCatch = 10;
+		this.likelyToCatch = 30;
 		
 	}
 
@@ -216,7 +213,7 @@ public class Pokemon {
 		int low = 1;
 		int high = 101;
 		int randomNumber = r.nextInt(high-low) + low;
-		System.out.println(randomNumber);
+		System.out.println(randomNumber <= likelyToCatch);
 		if(randomNumber <= likelyToCatch){
 			return true;
 		}else{
@@ -239,30 +236,37 @@ public class Pokemon {
 		int high = 101;
 		int randomNumber = r.nextInt(high-low) + low;
 		
-		System.out.println(randomNumber);
-		if(randomNumber <= likelyToCatch){
+		if(randomNumber <= likelyToRun){
 			return true;
 		}else{
 			return false;
 		}
 	}
 	
-	public static void main(String []args){
-	Pokemon gregachu = new Pokemon("Hassidoof",1);
-	Graphics g;
-	JPanel panel = new JPanel(){
-		private static final long serialVersionUID = 1L;
-
-		public void paintComponent(Graphics g){
-			super.paintComponent(g);
-			g.drawImage(gregachu.getImage(),0,0,300,400,null);
-	}};
-	
-	JFrame x = new JFrame();
-	x.setSize(new Dimension(300,450));
-	x.add(panel);
-	x.setVisible(true);
+	public void setLikelyToCatch(){
+		this.likelyToCatch = 30;
 	}
+	
+	public void setLikelyToRun(){
+		this.likelyToRun = 30;
+	}
+	
+//	public static void main(String []args){
+//	Pokemon gregachu = new Pokemon("Hassidoof",1);
+//	Graphics g;
+//	JPanel panel = new JPanel(){
+//		private static final long serialVersionUID = 1L;
+//
+//		public void paintComponent(Graphics g){
+//			super.paintComponent(g);
+//			g.drawImage(gregachu.getImage(),0,0,300,400,null);
+//	}};
+//	
+//	JFrame x = new JFrame();
+//	x.setSize(new Dimension(300,450));
+//	x.add(panel);
+//	x.setVisible(true);
+//	}
 	}
 	
 

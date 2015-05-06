@@ -15,9 +15,7 @@ public class GeneratePokeBattle {
 	
 	public GeneratePokeBattle(Trainer trainer){
 		this.trainer = trainer;
-	}
-	
-	public void generatePokemon(){
+		
 		Random r = new Random();
 		int low = 1;
 		int high = 26;
@@ -77,7 +75,8 @@ public class GeneratePokeBattle {
 		}
 		
 		this.pokemon = pokemon;	
-		}
+		
+	}
 	
 	public Pokemon getPokemon(){
 		return pokemon;

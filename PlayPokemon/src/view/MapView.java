@@ -10,6 +10,7 @@ import maps.Map;
 import maps.Map1;
 import maps.Map2;
 import model.GeneratePokeBattle;
+import model.Pokemon;
 
 public class MapView extends JPanel{
 	
@@ -23,15 +24,18 @@ public class MapView extends JPanel{
 	private int positionY = 0;
 	private int positionX = 0;
 	private GeneratePokeBattle pokemonEncounter;
+	private Pokemon pokemon;
 	private Trainer trainer;
 	private boolean encounter;
 	private Random num;
 	private int encounterRate;
 	private int stepCounter;
+	private boolean state;
 	
 	public MapView(int mapType, Trainer trainer) {
 		stepCounter = 500;
 		this.encounter = false;
+		this.state = true;
 		this.trainer = trainer;
 		pokemonEncounter = new GeneratePokeBattle(trainer);
 		if(mapType == 1)
@@ -45,6 +49,8 @@ public class MapView extends JPanel{
 				mapView[i][j] = tempMap[i][j];
 			}
 		}
+		
+		pokemon = generateRandomPokemon();
 		
 	}
 	
@@ -69,7 +75,8 @@ public class MapView extends JPanel{
 				num = new Random();
 				encounterRate = num.nextInt(100);
 				if(encounterRate <= 7) {
-					pokemonEncounter.generatePokemon();
+					generateRandomPokemon();
+//					pokemonEncounter.generatePokemon();
 					setEncounter(true);
 				}
 				else {setEncounter(false);}
@@ -79,6 +86,7 @@ public class MapView extends JPanel{
 					mapView[i][j] = tempMap[i + positionX][j + positionY];
 				}
 			}
+//			System.out.println(stepCounter);
 		}
 		
 	}
@@ -100,7 +108,8 @@ public class MapView extends JPanel{
 				num = new Random();
 				encounterRate = num.nextInt(100);
 				if(encounterRate <= 7) {
-					pokemonEncounter.generatePokemon();
+					generateRandomPokemon();
+//					pokemonEncounter.generatePokemon();
 					setEncounter(true);
 				}
 				else {setEncounter(false);}
@@ -110,6 +119,7 @@ public class MapView extends JPanel{
 					mapView[i][j] = tempMap[i + positionX][j + positionY];
 				}
 			}
+//			System.out.println(stepCounter);
 		}
 	}
 	
@@ -130,7 +140,8 @@ public class MapView extends JPanel{
 				num = new Random();
 				encounterRate = num.nextInt(100);
 				if(encounterRate <= 7) {
-					pokemonEncounter.generatePokemon();
+					generateRandomPokemon();
+//					pokemonEncounter.generatePokemon();
 					setEncounter(true);
 				}
 				else {setEncounter(false);}
@@ -140,6 +151,7 @@ public class MapView extends JPanel{
 					mapView[i][j] = tempMap[i + positionX][j + positionY];
 				}
 			}
+//			System.out.println(stepCounter);
 		}
 	}
 	
@@ -160,7 +172,8 @@ public class MapView extends JPanel{
 				num = new Random();
 				encounterRate = num.nextInt(100);
 				if(encounterRate <= 7) {
-					pokemonEncounter.generatePokemon();
+					generateRandomPokemon();
+//					pokemonEncounter.generatePokemon();
 					setEncounter(true);
 				}
 				else {setEncounter(false);}
@@ -170,6 +183,7 @@ public class MapView extends JPanel{
 					mapView[i][j] = tempMap[i + positionX][j + positionY];
 				}
 			}
+//			System.out.println(stepCounter);
 		}
 	}
 	
@@ -200,5 +214,27 @@ public class MapView extends JPanel{
 	
 	public int getSteps() {
 		return stepCounter;
+	}
+	
+	public void setState(boolean state) {
+		this.state = state;
+	}
+	
+	public boolean getState() {
+		return state;
+	}
+	
+	public Pokemon getPokemon() {
+		return pokemon;
+	}
+	
+	public Pokemon generateRandomPokemon(){
+		GeneratePokeBattle temp = new GeneratePokeBattle(trainer);
+		pokemon = temp.getPokemon();
+		return temp.getPokemon();
+	}
+	
+	public Trainer getTrainer(){
+		return trainer;
 	}
 }
