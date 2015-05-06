@@ -72,17 +72,17 @@ public class PokeWorld{
 			throw new RuntimeException("You must pick an option from each prompt!");
 		}
 		
-		
 		// setting up Pokemon game
 		JFrame gameFrame = new JFrame("Pokémon: " + trainerName);
 		gameFrame.setSize(998,689);
 		gameFrame.setLayout(new GridLayout(2,3));
 		World myWorld = new World(trainerName,mapChoice);
-		ItemView itemView = new ItemView(myWorld.getTrainer(), myWorld.getMapView(), myWorld.getKeySet()); // list of items by making new ItemView
+		
 		JList itemList = new JList(myWorld.getTrainer().getItemList()); // hardcoding list of items
 		PokemonCaptureView capturedList = new PokemonCaptureView(myWorld.getTrainer());
 		PokeBattle battle = new PokeBattle(myWorld.getTrainer(),myWorld.getMapView().getPokemon());
 		PokeText pokeText = new PokeText(battle);
+		ItemView itemView = new ItemView(myWorld.getTrainer(), myWorld.getMapView(), pokeText, battle, myWorld.getKeySet()); // list of items by making new ItemView
 		PokeBattleView battleScene = new PokeBattleView(battle,myWorld.getMapView(),pokeText,capturedList,itemView);
 
 	
@@ -121,7 +121,6 @@ public class PokeWorld{
 //					System.out.println(myWorld.getMapView().getTrainer().getCaughtList().toString());
 					capturedList.setPokemonList(myWorld.getMapView().getTrainer().getCaughtList());
 //					capturedList.repaint();
-					System.out.println(capturedList.toStrings());
 //					battle = new PokeBattle(myWorld.getTrainer(),battleScene.getMap().getPokemon());
 //					myWorld.setEnabled(false);
 //					System.out.println(myWorld.getMapView().getState());
@@ -135,7 +134,7 @@ public class PokeWorld{
 				
 					
 				else{
-					
+					itemView.setItemList(myWorld.getTrainer());
 					battleScene.setVisibility(false);
 					battleScene.setVisible(false);
 					myWorld.getMapView().setState(true);
@@ -143,7 +142,7 @@ public class PokeWorld{
 					myWorld.getKeySet().add(e.getKeyChar());
 //					myWorld.getItemList().setVisible(true);
 					myWorld.getMapView().setState(true);
-					itemView.setItemList(myWorld.getTrainer());
+					
 //					itemView.repaint();
 					capturedList.setPokemonList(myWorld.getMapView().getTrainer().getCaughtList());
 //				}

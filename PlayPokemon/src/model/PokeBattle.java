@@ -217,4 +217,8 @@ public class PokeBattle {
 	public boolean isCaught() {
 		return caught;
 	}
+	
+	public boolean isAsleep(){
+		return isAsleep;
+	}
 }

@@ -1,6 +1,9 @@
 package view;
 
+import java.awt.AWTException;
 import java.awt.Graphics;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -197,7 +200,16 @@ public class MapView extends JPanel{
 	
 	public void addItem(int x, int y) {
 		String item = map.getItem(x, y);
-		
+		try {
+	        Robot robot = new Robot();
+
+	        // Simulate a key press
+	        robot.keyPress(KeyEvent.VK_A);
+	        robot.keyRelease(KeyEvent.VK_A);
+
+		} catch (AWTException g) {
+			g.printStackTrace();
+		}
 		if(item.equals("Sleeping Dart"))
 			trainer.getDart().addItem();
 		else if(item.equals("Running Shoes"))

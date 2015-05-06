@@ -1,7 +1,9 @@
 package view;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -20,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import model.PokeBattle;
 import objects.Trainer;
 
 public class ItemView extends JPanel{
@@ -34,12 +37,16 @@ public class ItemView extends JPanel{
 	private ListSelectionListener selectionListener;
 //	private KeyListener[] key;
 	private TreeSet<Character> treeSet;
+	private PokeText pokeText;
+	private PokeBattle battle;
 	
-	public ItemView(Trainer trainer, MapView map, TreeSet<Character> treeSet) {
+	public ItemView(Trainer trainer, MapView map, PokeText pokeText, PokeBattle battle, TreeSet<Character> treeSet) {
 //		this.setPreferredSize(new Dimension(300,300));
 		this.setLayout(new BorderLayout());
 		this.trainer = trainer;
 		this.map = map;
+		this.pokeText = pokeText;
+		this.battle = battle;
 		this.itemList = new String[4];
 		setItemList(this.trainer);
 		this.items = new JList<String>(itemList);
@@ -92,26 +99,42 @@ public class ItemView extends JPanel{
 						}
 					}
 					else if(itemList[items.getSelectedIndex()].contains(trainer.getDart().getItemName()) & map.getState() == false){
+						if(trainer.getDart().getQuantity() > 0){
+							pokeText.updateText("The Pokemon Is Now Asleep!");
+							battle.useSleepDart();
+						}
+						else{
+							pokeText.updateText("You Have No More Sleeping Darts!");
+						}
 						
-						trainer.getDart().useItem();
+						
 						
 					}
 					else if(itemList[items.getSelectedIndex()].contains(trainer.getMaster().getItemName()) & map.getState() == false) {
-						trainer.getMaster().useItem();
-						
+						if(trainer.getMaster().getQuantity() <= 0){
+							pokeText.updateText("You Have No More Master Balls!");
+						}
+						else if(trainer.getMaster().getQuantity() > 0){
+							battle.useMasterBall();
+							trainer.getMaster().useItem();
+							if(battle.getEndBattle() == true & battle.isCaught() == true){
+								pokeText.updateText("The Pokemon was Caught!");
+								map.setEncounter(false);
+								battle.reset();
+								try {
+							        Robot robot = new Robot();
+							        
+							        // Simulate a key press
+							        robot.keyPress(KeyEvent.VK_A);
+							        robot.keyRelease(KeyEvent.VK_A);
+
+								} catch (AWTException g) {
+							        g.printStackTrace();
+								}
+							}
+						}
 					}
-					
-//					System.out.println(itemList[index] + " " + trainer.getDart().useItem() + " " + itemList[index]);
-//					System.out.println(itemList[index])
 					else{
-//						JOptionPane message = new JOptionPane();
-//						message.setFocusable(false);
-//						requestFocusInWindow();
-//						JPanel msgPanel = new JPanel(new BorderLayout());
-//						msgPanel.add(new JLabel("You do not have enough " + itemList[items.getSelectedIndex()]));
-//						msgPanel.setFocusable(false);
-//						msgPanel.requestFocusInWindow();
-//						map.setState(false);
 						treeSet.clear();
 						JOptionPane.showMessageDialog(null, "Professor Snodgrass says now's not the time to use that!", "Can't Use!", JOptionPane.PLAIN_MESSAGE);
 						
@@ -120,12 +143,6 @@ public class ItemView extends JPanel{
 //				map.setState(true);
 				setItemList(trainer);
 				repaint();
-				
-				
-				
-				System.out.println(itemList[items.getSelectedIndex()]);
-				System.out.println(trainer.getShoes().getQuantity());
-				System.out.println(map.getSteps());
 			}
 			
 		});
